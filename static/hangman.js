@@ -157,19 +157,43 @@ function getStatusLoop() {
                         if(curPlay.innerHTML != 'din'){
                             curPlay.innerHTML = 'din'
                             curPlay.style.color = 'red'
-
+                            document.getElementById('guessLetter').style.display = 'block';
                         }
                     } else {
                         curPlay.innerHTML = res.currentPlaying.username + ' sin'
                         curPlay.style.color = 'black'
+                        document.getElementById('guessLetter').style.display = 'none';
+                    }
+
+                    //Display wrong letters
+                    var wrongLetters = res.wrongLetters.sort()
+                    var wrongLettersDiv = document.getElementById('wrongLetters')
+                    var str = '<h4>Dere har gjettet: </h4><h4>'
+                    for(i = 0; i < wrongLetters.length; i++) {
+                        str += wrongLetters[i].toUpperCase() + ' '
+                    }
+                    str += '</h4>'
+                    wrongLettersDiv.innerHTML = str
+
+                    //Display correct letters
+                    var rightLetters = res.rightLetters
+                    for(var l in rightLetters) {
+                        if(rightLetters.hasOwnProperty(l)) {
+                            for(i = 0; i < rightLetters[l].length; i++) {
+                                document.getElementById('letter_' + rightLetters[l][i]).innerHTML = '<h3>' + l.toUpperCase() + '</h3>'     
+                            }
+                        }
                     }
 
                     //Updates chat
-                    // var chat = document.getElementById('chat')
-                    // var guesses = res.guessedWords
-                    // for(i = 0; i < guesses.length; i++) {
-
-                    // }
+                    var chat = document.getElementById('chat')
+                    chat.innerHTML = ''
+                    var msgs = res.chatMessages
+                    for(i = 0; i < msgs.length; i++) {
+                        var p = document.createElement('p')
+                        p.innerHTML = msgs[i]
+                        chat.insertBefore(p, chat.firstChild)
+                    }
                 } else {
                     console.log('Server has been reset')
                 }
@@ -214,6 +238,9 @@ function init() {
     var h3 = document.createElement('h3')
     h3.innerHTML = "<h3>Ordet er engelsk og har <span id='letterNum'></span> bokstaver"
     div.appendChild(h3)
+    var wrongLetters = document.createElement('div')
+    wrongLetters.id = 'wrongLetters'
+    div.appendChild(wrongLetters)
     var div2 = document.createElement('div')
     div2.id = 'wordInside'
     div.appendChild(div2)
@@ -222,7 +249,7 @@ function init() {
     div.innerHTML = "<h3>Det er <span id='currentPlaying'></span> tur</h3><h4>Du kan gjette hele ordet her:</h4><input type='text' placeholder='Gjett ordet' id='guessWord'><button onclick='guessWord()' >Send</button>"
     var guessLetter = document.createElement('div')
     guessLetter.id = 'guessLetter'
-    guessLetter.innerHTML = "<h4 id='guessLetterHeader'>Gjett en bokstav:</h4><input type='text id='guessLetterTextbox' placeholder='Gjett en bokstav' maxlength='1' minlength='1'><button id='guessLetterButton' onclick='guessLetter()'>Send</button>"
+    guessLetter.innerHTML = "<h4 id='guessLetterHeader'>Gjett en bokstav:</h4><input type='text' id='guessLetterTextbox' placeholder='Gjett en bokstav' maxlength='1' minlength='1'><button id='guessLetterButton' onclick='guessLetter()'>Send</button>"
     div.appendChild(guessLetter)
     g.appendChild(div)
 
@@ -262,11 +289,9 @@ function guessWord() {
 
 function guessLetter() {
     var l = document.getElementById('guessLetterTextbox').value
-    // if(tb.value.strip().length != 1) {
-        
-    // }
+    document.getElementById('guessLetter').style.display = 'none';
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:5000/guessLetter?guessedWord=${gw}&username=${myUsername}`, true);
+    xhr.open("GET", `http://localhost:5000/guessLetter?guessedLetter=${l}`, true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {

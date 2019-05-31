@@ -19,20 +19,32 @@
 
 #word {
     width: 494px;
-    height: 150px;
+    height: 194px;
     float: right;
     position: relative;
 }
 
 #wordInside {
     position: absolute;
-    bottom: 20px;
+    bottom: 0;
     width: 494px;
+    /* vertical-align: bottom; */
+}
+
+#wordInside h3 {
+    /* bottom: 0; */
+    margin: 0;
+}
+
+#wrongLetters {
+    position: relative;
+    width: 494px;
+    height: 100px;
 }
 
 .letter {
     width: 30px;
-    height: 40px;
+    height: 21.4px;
     border-bottom: 1px solid black;
     display: inline-block;
     margin: 0 3px;
@@ -41,12 +53,12 @@
 /* Gjetting */
 #guess {
     width: 494px;
-    height: 244px;
+    height: 200px;
     float: right;
 }
 
 #guessLetter {
-    display: block;
+    display: none;
 }
 
 form input {
@@ -63,4 +75,8 @@ form input {
     margin: auto;
     margin-top: 5px;
     overflow-y: auto;
+}
+
+#chat p {
+    margin: 2px;
 }

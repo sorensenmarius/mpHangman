@@ -12,7 +12,7 @@ currentPlayers = []
 currentPlaying = ''
 playing = {'p': False, 'started': ''}
 currentWord = ''
-rightLetters = []
+rightLetters = {}
 wrongLetters = []
 chatMessages = []
 
@@ -67,7 +67,6 @@ def getPlayers():
 def letsPlay():
     global playing
     global currentPlaying
-    global currentGuesses
     global currentPlayers
     playing['p'] = True
     playing['started'] = request.args.get('username')
@@ -79,11 +78,13 @@ def letsPlay():
 def status():
     global currentPlaying
     global wrongLetters
+    global rightLetters
     global playing
     global chatMessages
     res = {
         'currentPlaying': currentPlaying,
-        'wrongLetters': len(wrongLetters),
+        'wrongLetters': wrongLetters,
+        'rightLetters': rightLetters,
         'playing': playing,
         'chatMessages': chatMessages
     }
@@ -111,20 +112,29 @@ def guessLetter():
     global currentPlaying
     global wrongLetters
     global currentWord
+    global currentPlayers
     l = request.args.get('guessedLetter')
     if(l.lower() not in alphabet):
-        chatMessages.append(f"{currentPlaying}... {l} er jo ikke i det engelske alfabetet? Du mister din tur")
+        chatMessages.append(f"{currentPlaying['username']}... {l} er jo ikke i det engelske alfabetet? Du mister din tur")
         msg = 'Not an english letter'
-    if(l.lower() in wrongLetters or l.lower() in rightLetters):
-        chatMessages.append(f"Wops {currentPlaying}, '{l}' har allerede blitt gjettet. Du mister din tur")
+    elif(l.lower() in wrongLetters or l.lower() in rightLetters):
+        chatMessages.append(f"Wops {currentPlaying['username']}, '{l}' har allerede blitt gjettet. Du mister din tur")
         msg = 'Already guessed'
-    if(l.lower() not in currentWord):
-        chatMessages.append(random.choice([f"'{l}' er nok ikke en del av dette ordet {currentPlaying}.", f"Godt forsøk {currentPlaying}, men '{l}' er fortsatt feil.", f"'{l}' var nesten, men nesten holder ikke {currentPlaying}"]))
+    elif(l.lower() not in currentWord and l.lower()):
+        chatMessages.append(random.choice([f"'{l}' er nok ikke en del av dette ordet {currentPlaying['username']}.", f"Godt forsøk {currentPlaying['username']}, men '{l}' er feil.", f"'{l}' var nesten, men nesten holder ikke {currentPlaying['username']}"]))
         wrongLetters.append(l)
         msg = 'That letter is not in the word'
-    if(l.lower() in currentWord):
-        chatMessages.append(random.choice([f"Helt riktig {currentPlaying}, '{l}' er en del av ordet!", f"{currentPlaying} gjetter '{l}' og har aldri hatt mer rett", f"Du vinner denne gang {currentPlaying}, '{l}' er riktig det..."]))
-        rightLetters.append(l)
+    elif(l.lower() in currentWord):
+        chatMessages.append(random.choice([f"Helt riktig {currentPlaying['username']}, '{l}' er en del av ordet!", f"{currentPlaying['username']} gjetter '{l}' og har aldri hatt mer rett", f"Du vinner denne gang {currentPlaying['username']}, '{l}' er riktig det..."]))
+        rightLetterIndexes = [pos for pos, char in enumerate(currentWord) if char == l]
+        rightLetters[l] = rightLetterIndexes
+        if len(rightLetterIndexes) > 1:
+            s = 'steder'
+        else:
+            s = 'sted'
+        chatMessages.append(f"{currentPlaying['username']} får {len(rightLetterIndexes) * 500} poeng for å gjette en bokstav som er {len(rightLetterIndexes)} {s} i ordet!")
+        # TODO Adde poeng når spillere velger riktig bokstav:
+        [player for player in currentPlayers if player.get('username')==currentPlaying['username']]['points'] += len(rightLetterIndexes)
         msg = 'Correct letter!'
     i = currentPlayers.index(currentPlaying)
     if i == len(currentPlayers) - 1:
@@ -132,13 +142,6 @@ def guessLetter():
     else: 
         currentPlaying = currentPlayers[i + 1]
     return msg
-    
-    
-
-
-
-
-
 
 #Test routes
 @app.route('/nextPlayer')
@@ -148,7 +151,9 @@ def nextPlayer():
     i = currentPlayers.index(currentPlaying)
     if i == len(currentPlayers) - 1:
         currentPlaying = currentPlayers[0]
-    currentPlaying = currentPlayers[i + 1]
+    else:
+        currentPlaying = currentPlayers[i + 1]
+    return f'Next player is {currentPlaying}'
 
 @app.route('/gimme')
 def gimme():
