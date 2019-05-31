@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block head %}
+    <head>
+        <link rel="stylesheet" href="{{url_for('static', filename='play.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+        <title>Play hangman</title>
+    </head>
+{% endblock %}
+{% block content %}
+    <script src="./static/hangman.js"></script>
+    <div id="game">
+
+    </div>
+
+    <div id="chat"></div>
+{% endblock %}

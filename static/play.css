@@ -1,0 +1,66 @@
+#game {
+    width: 800px;
+    height: 400px;
+    border: 3px solid black;
+    margin: auto;
+}
+
+#playerBox {
+    display: inline-flex;
+    border: 1px solid green;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 5px;
+}
+
+#canv {
+    float: left;
+}
+
+#word {
+    width: 494px;
+    height: 150px;
+    float: right;
+    position: relative;
+}
+
+#wordInside {
+    position: absolute;
+    bottom: 20px;
+    width: 494px;
+}
+
+.letter {
+    width: 30px;
+    height: 40px;
+    border-bottom: 1px solid black;
+    display: inline-block;
+    margin: 0 3px;
+}
+
+/* Gjetting */
+#guess {
+    width: 494px;
+    height: 244px;
+    float: right;
+}
+
+#guessLetter {
+    display: block;
+}
+
+form input {
+    margin: 3px;
+}
+
+
+
+
+#chat {
+    width: 600px;
+    height: 200px;
+    border: 2px solid black;
+    margin: auto;
+    margin-top: 5px;
+    overflow-y: auto;
+}
