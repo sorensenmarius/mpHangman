@@ -15,6 +15,11 @@ currentWord = ''
 rightLetters = {}
 wrongLetters = []
 chatMessages = []
+winner = {}
+
+
+#Constants
+pointScale = 500
 
 @app.route('/')
 def home():
@@ -86,19 +91,23 @@ def status():
         'wrongLetters': wrongLetters,
         'rightLetters': rightLetters,
         'playing': playing,
-        'chatMessages': chatMessages
+        'chatMessages': chatMessages,
+        'winner': winner
     }
     return json.dumps(res)
 
 @app.route('/guessWord')
 def guessWord():
     global currentWord
+    global winner
+    global chatMessages
     w = request.args.get('guessedWord')
     u = request.args.get('username')
     wrongGuess = [f"{u} gjettet '{w}'. Det er jo ikke helt riktig", f"{u} prøver seg på '{w}', som er helt feil", f"{u}, '{w}' er nok ikke riktig det nei."]
     if currentWord.lower() == w.lower():
-        # guessedWords.append({'w': w, 'u': u, 'correct': True})
-        chatMessages.append("{username}")
+        winner = {'username': u, 'correctWord': w}
+        chatMessages.append(f"{u} gjettet '{w}'' som er helt riktig! {int(len(w) * (pointScale / 2))} poeng blir delt ut.")
+        [player for player in currentPlayers if player.get('username') == u][0]['points'] += int(len(w) * (pointScale / 2))
         return 'You guessed correctly'
     else:
         chatMessages.append(random.choice(wrongGuess))
@@ -113,6 +122,7 @@ def guessLetter():
     global wrongLetters
     global currentWord
     global currentPlayers
+    global pointScale
     l = request.args.get('guessedLetter')
     if(l.lower() not in alphabet):
         chatMessages.append(f"{currentPlaying['username']}... {l} er jo ikke i det engelske alfabetet? Du mister din tur")
@@ -132,9 +142,10 @@ def guessLetter():
             s = 'steder'
         else:
             s = 'sted'
-        chatMessages.append(f"{currentPlaying['username']} får {len(rightLetterIndexes) * 500} poeng for å gjette en bokstav som er {len(rightLetterIndexes)} {s} i ordet!")
+        chatMessages.append(f"{currentPlaying['username']} får {len(rightLetterIndexes) * pointScale} poeng for å gjette en bokstav som er {len(rightLetterIndexes)} {s} i ordet!")
         # TODO Adde poeng når spillere velger riktig bokstav:
-        [player for player in currentPlayers if player.get('username')==currentPlaying['username']]['points'] += len(rightLetterIndexes)
+
+        [player for player in currentPlayers if player.get('username') == currentPlaying['username']][0]['points'] += len(rightLetterIndexes) * pointScale
         msg = 'Correct letter!'
     i = currentPlayers.index(currentPlaying)
     if i == len(currentPlayers) - 1:

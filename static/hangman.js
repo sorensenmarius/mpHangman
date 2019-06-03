@@ -152,6 +152,10 @@ function getStatusLoop() {
                 var res = JSON.parse(xhr.response)
                 var curPlay = document.getElementById('currentPlaying')
                 if(res.playing.p) {
+                    if(res.winner) {
+
+                    }
+
                     // Updates who is playing
                     if(res.currentPlaying.username == myUsername) {
                         if(curPlay.innerHTML != 'din'){
@@ -169,11 +173,16 @@ function getStatusLoop() {
                     var wrongLetters = res.wrongLetters.sort()
                     var wrongLettersDiv = document.getElementById('wrongLetters')
                     var str = '<h4>Dere har gjettet: </h4><h4>'
-                    for(i = 0; i < wrongLetters.length; i++) {
-                        str += wrongLetters[i].toUpperCase() + ' '
+                    if(wrongLetters.length > 6) {
+                        //End game
+                    } else {
+                        for(i = 0; i < wrongLetters.length; i++) {
+                            str += wrongLetters[i].toUpperCase() + ' '
+                            drawNext(i)
+                        }
+                        str += '</h4>'
+                        wrongLettersDiv.innerHTML = str
                     }
-                    str += '</h4>'
-                    wrongLettersDiv.innerHTML = str
 
                     //Display correct letters
                     var rightLetters = res.rightLetters
@@ -194,6 +203,28 @@ function getStatusLoop() {
                         p.innerHTML = msgs[i]
                         chat.insertBefore(p, chat.firstChild)
                     }
+
+                    //Updates scoreboard
+                    var sb = document.getElementById('scoreboard')
+                    
+                    fetch('./getPlayers')
+                        .then((res) => {
+                            console.log('Ytters')
+                            res.json().then((data) => {
+                                console.log('Innerst')
+                                var sortedPlayers = data.currentPlayers.sort((a, b) => b.points - a.points);
+                                var sbString = '<div id="sbDiv"><span class="leftSpan sbTitle">Navn</span><span class="rightSpan sbTitle">Poeng</span></div>'
+                                for(i = 0; i < sortedPlayers.length; i++) {
+                                    if(sortedPlayers[i].points) {
+                                        sbString += `<p><span class="leftSpan">${sortedPlayers[i].username}</span><span class="rightSpan">${sortedPlayers[i].points}</span></p>`
+                                    } else {
+                                        sbString += `<p><span class="leftSpan">${sortedPlayers[i].username}</span><span class="rightSpan">0</span></p>`
+                                    }
+                                }
+                                sb.innerHTML = sbString
+                                console.log(sortedPlayers)
+                            })
+                        })
                 } else {
                     console.log('Server has been reset')
                 }
@@ -208,6 +239,14 @@ function getStatusLoop() {
         };
         xhr.send(null);
     }, 2000)
+}
+
+function riktigOrd(msg) {
+    ordSetup()
+}
+
+function endGame() {
+
 }
 
 
@@ -296,6 +335,7 @@ function guessLetter() {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
             console.log(xhr.responseText)
+            document.getElementById('guessLetterTextbox').value = ''
         } else {
             console.error(xhr.statusText);
         }
