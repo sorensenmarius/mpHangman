@@ -9,6 +9,9 @@
     cursor:pointer;
     transition:800ms ease all;
     outline:none;
+    bottom: 1px;
+    width: 50%;
+    margin: auto;
   }
   #playButton:hover{
     background:#fff;
@@ -33,4 +36,8 @@
   #playButton:hover:before,#playButton:hover:after{
     width:100%;
     transition:800ms ease all;
+  }
+
+  #homeTitle {
+    margin-top: 35vh;
   }
