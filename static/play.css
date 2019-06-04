@@ -75,7 +75,7 @@ form input {
     border: 2px solid black;
     margin: auto;
     margin-top: 5px;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 #chat p {

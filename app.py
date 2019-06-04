@@ -15,7 +15,8 @@ currentWord = ''
 rightLetters = {}
 wrongLetters = []
 chatMessages = []
-winner = {}
+winner = False
+newRound = True
 
 
 #Constants
@@ -33,12 +34,43 @@ def play():
 @app.route('/newWord')
 def newWord():
     global currentWord
+    global chatMessages
     randomLetter = random.choice(alphabet)
     words = json.loads(requests.get(f'http://api.datamuse.com/sug?s={randomLetter}&max=100').text)
     word = random.choice([word for word in words if len(word.get('word')) > 4])
     currentWord = word['word']
     length = len(currentWord)
+    chatMessages.append("NYTT ORD!")
+    newWordReset()
     return json.dumps(length)
+
+def newWordReset():
+    global rightLetters
+    global wrongLetters
+    global winner
+    rightLetters = {}
+    wrongLetters = []
+    winner = False
+    print('Jeg har resetta')
+
+def newRoundReset():
+    global currentPlayers
+    global currentPlaying
+    global playing 
+    global currentWord
+    global rightLetters
+    global wrongLetters
+    global chatMessages
+    global winner
+    currentPlayers = []
+    currentPlaying = ''
+    playing = {'p': False, 'started': ''}
+    currentWord = ''
+    rightLetters = {}
+    wrongLetters = []
+    chatMessages = []
+    winner = False
+
 
 @app.route('/getWord')
 def getWord():
@@ -73,10 +105,12 @@ def letsPlay():
     global playing
     global currentPlaying
     global currentPlayers
+    global newRound
     playing['p'] = True
     playing['started'] = request.args.get('username')
     currentPlaying = random.choice(currentPlayers)
     print(currentPlaying)
+    newRound = False
     return "Lets play"
 
 @app.route('/status')
@@ -108,10 +142,11 @@ def guessWord():
         winner = {'username': u, 'correctWord': w}
         chatMessages.append(f"{u} gjettet '{w}'' som er helt riktig! {int(len(w) * (pointScale / 2))} poeng blir delt ut.")
         [player for player in currentPlayers if player.get('username') == u][0]['points'] += int(len(w) * (pointScale / 2))
-        return 'You guessed correctly'
+        print('hit?')
+        return json.dumps({'correct': True})
     else:
         chatMessages.append(random.choice(wrongGuess))
-        return 'Thats not quite right'
+        return json.dumps({'correct': False})
 
 
 @app.route('/guessLetter')
@@ -154,6 +189,18 @@ def guessLetter():
         currentPlaying = currentPlayers[i + 1]
     return msg
 
+@app.route('/newRound')
+def newRoundF():
+    global newRound
+    newRoundReset()
+    newRound = True
+    return 'New round starting'
+
+@app.route('/newRoundLoop')
+def newRoundLoop():
+    global newRound
+    return json.dumps({'nr': newRound})
+
 #Test routes
 @app.route('/nextPlayer')
 def nextPlayer():
@@ -166,10 +213,10 @@ def nextPlayer():
         currentPlaying = currentPlayers[i + 1]
     return f'Next player is {currentPlaying}'
 
-@app.route('/gimme')
+@app.route('/getFullWord')
 def gimme():
     global currentWord
-    return currentWord
+    return json.dumps({'w': currentWord})
 
 if __name__ == "__main__":
     app.run(debug=1) 

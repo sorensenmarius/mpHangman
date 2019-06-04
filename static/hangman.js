@@ -6,6 +6,7 @@ window.onload = () => {
 //Global variables
 var myUsername = ''
 var iStarted = false
+var lastWinnerWord = ''
 
 
 function startGame() {
@@ -44,6 +45,7 @@ function newWord() {
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
+            console.log("I requested a new word")
         } else {
             console.error(xhr.statusText);
         }
@@ -59,14 +61,14 @@ function getWord() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://localhost:5000/getWord", true);
     xhr.onload = function (e) {
-    if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-            init()
-            ordSetup(xhr.responseText)
-        } else {
-            console.error(xhr.statusText);
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                init()
+                ordSetup(xhr.responseText)
+            } else {
+                console.error(xhr.statusText);
+            }
         }
-    }
     };
     xhr.onerror = function (e) {
         console.error(xhr.statusText);
@@ -74,7 +76,7 @@ function getWord() {
     xhr.send(null);
 } 
 
-function getPlayersLoop(notReady) {
+function getPlayersLoop() {
     setTimeout(() => {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "http://localhost:5000/getPlayers", true);
@@ -104,7 +106,7 @@ function getPlayersLoop(notReady) {
             console.error(xhr.statusText);
         };
         xhr.send(null);
-    }, 1000)
+    }, 500)
 }
 
 function starting(started) {
@@ -130,6 +132,7 @@ function letsPlay() {
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
+            console.log("Lager nytt ord")
             newWord()
         } else {
             console.error(xhr.statusText);
@@ -152,8 +155,13 @@ function getStatusLoop() {
                 var res = JSON.parse(xhr.response)
                 var curPlay = document.getElementById('currentPlaying')
                 if(res.playing.p) {
-                    if(res.winner) {
 
+                    if(res.winner) {
+                        if(res.winner.correctWord != lastWinnerWord) {
+                            lasWinnerWord = res.winner.correctWord
+                            console.log('Ny vinner dermed nytt ord')
+                            return getWord()
+                        }
                     }
 
                     // Updates who is playing
@@ -174,7 +182,7 @@ function getStatusLoop() {
                     var wrongLettersDiv = document.getElementById('wrongLetters')
                     var str = '<h4>Dere har gjettet: </h4><h4>'
                     if(wrongLetters.length > 6) {
-                        //End game
+                        return endGame()
                     } else {
                         for(i = 0; i < wrongLetters.length; i++) {
                             str += wrongLetters[i].toUpperCase() + ' '
@@ -209,9 +217,7 @@ function getStatusLoop() {
                     
                     fetch('./getPlayers')
                         .then((res) => {
-                            console.log('Ytters')
                             res.json().then((data) => {
-                                console.log('Innerst')
                                 var sortedPlayers = data.currentPlayers.sort((a, b) => b.points - a.points);
                                 var sbString = '<div id="sbDiv"><span class="leftSpan sbTitle">Navn</span><span class="rightSpan sbTitle">Poeng</span></div>'
                                 for(i = 0; i < sortedPlayers.length; i++) {
@@ -222,7 +228,6 @@ function getStatusLoop() {
                                     }
                                 }
                                 sb.innerHTML = sbString
-                                console.log(sortedPlayers)
                             })
                         })
                 } else {
@@ -238,17 +243,44 @@ function getStatusLoop() {
             console.error(xhr.statusText);
         };
         xhr.send(null);
-    }, 2000)
-}
-
-function riktigOrd(msg) {
-    ordSetup()
+    }, 500)
 }
 
 function endGame() {
-
+    fetch('./getFullWord')
+    .then((res) => {
+        res.json().then((data) => {
+            var gameScreen = document.getElementById("game")
+            gameScreen.innerHTML = `<h1>Dere tapte! Ordet var '${data.w}'</h1>\n<button onclick='newRound()' class='btn'>Ny runde!</button>`
+            newRoundLoop()
+        })
+    })
 }
 
+
+function newRoundLoop() {
+    setTimeout(() => {
+        fetch('./newRoundLoop').then((response) => {
+            response.json().then((data) => {
+                if(data.nr) {
+                    console.log('Burde ikke komme hit hvis false: ' + data.nr)
+                    return window.location.href = '/play'
+                } else {
+                    newRoundLoop()
+                }
+            })
+        })
+    }, 500)
+}
+
+
+
+function newRound() {
+    fetch('./newRound')
+    .then(() => {
+        console.log('Jeg starta en ny runde')
+    })
+}
 
 
 function ordSetup(wordlength) {
@@ -305,16 +337,18 @@ function reset() {
     iStarted = false
 }
 
-// TODO Finish guessword
-
 function guessWord() {
     var gw = document.getElementById("guessWord").value
+    document.getElementById("guessWord").value = ''
     var xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:5000/guessWord?guessedWord=${gw}&username=${myUsername}`, true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-            console.log(xhr.responseText)
+            var res = JSON.parse(xhr.responseText)
+            if(res.correct) {
+                letsPlay()
+            }
         } else {
             console.error(xhr.statusText);
         }
