@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session
 
 import os
-# import requests
+import requests
 import random
 import json
 
