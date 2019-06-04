@@ -1,5 +1,5 @@
 flask
-requests
+# requests
 json
 os
 random
