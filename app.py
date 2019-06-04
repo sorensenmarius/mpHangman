@@ -1,9 +1,11 @@
+from flask import Flask, render_template, request, session
+
 import os
 import requests
 import random
 import json
 
-from flask import Flask, render_template, request, session
+
 
 app = Flask(__name__)
 
