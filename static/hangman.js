@@ -6,7 +6,7 @@ window.onload = () => {
 //Global variables
 var myUsername = ''
 var iStarted = false
-var lastWinnerWord = ''
+var roundNr = 0
 
 
 function startGame() {
@@ -155,13 +155,10 @@ function getStatusLoop() {
                 var res = JSON.parse(xhr.response)
                 var curPlay = document.getElementById('currentPlaying')
                 if(res.playing.p) {
-
-                    if(res.winner) {
-                        if(res.winner.correctWord != lastWinnerWord) {
-                            lasWinnerWord = res.winner.correctWord
-                            console.log('Ny vinner dermed nytt ord')
-                            return getWord()
-                        }
+                    if(res.roundNr != roundNr) {
+                        roundNr = res.roundNr
+                        console.log('Ny vinner dermed nytt ord')
+                        return getWord()
                     }
 
                     // Updates who is playing
@@ -329,10 +326,6 @@ function init() {
 
 
     getStatusLoop()
-}
-
-function resetGame() {
-    fetch('./newRound')
 }
 
 function guessWord() {

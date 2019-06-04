@@ -19,6 +19,7 @@ wrongLetters = []
 chatMessages = []
 winner = False
 newRound = True
+roundNr = 0
 
 
 #Constants
@@ -50,9 +51,11 @@ def newWordReset():
     global rightLetters
     global wrongLetters
     global winner
+    global roundNr
     rightLetters = {}
     wrongLetters = []
     winner = False
+    roundNr += 1
     print('Jeg har resetta')
 
 def newRoundReset():
@@ -64,6 +67,7 @@ def newRoundReset():
     global wrongLetters
     global chatMessages
     global winner
+    global roundNr
     currentPlayers = []
     currentPlaying = ''
     playing = {'p': False, 'started': ''}
@@ -72,6 +76,7 @@ def newRoundReset():
     wrongLetters = []
     chatMessages = []
     winner = False
+    roundNr = 0
 
 
 @app.route('/getWord')
@@ -122,13 +127,15 @@ def status():
     global rightLetters
     global playing
     global chatMessages
+    global roundNr
     res = {
         'currentPlaying': currentPlaying,
         'wrongLetters': wrongLetters,
         'rightLetters': rightLetters,
         'playing': playing,
         'chatMessages': chatMessages,
-        'winner': winner
+        'winner': winner,
+        'roundNr': roundNr
     }
     return json.dumps(res)
 
@@ -142,7 +149,7 @@ def guessWord():
     wrongGuess = [f"{u} gjettet '{w}'. Det er jo ikke helt riktig", f"{u} prøver seg på '{w}', som er helt feil", f"{u}, '{w}' er nok ikke riktig det nei."]
     if currentWord.lower() == w.lower():
         winner = {'username': u, 'correctWord': w}
-        chatMessages.append(f"{u} gjettet '{w}'' som er helt riktig! {int(len(w) * (pointScale / 2))} poeng blir delt ut.")
+        chatMessages.append(f"{u} gjettet '{w}' som er helt riktig! {int(len(w) * (pointScale / 2))} poeng blir delt ut.")
         [player for player in currentPlayers if player.get('username') == u][0]['points'] += int(len(w) * (pointScale / 2))
         print('hit?')
         return json.dumps({'correct': True})
