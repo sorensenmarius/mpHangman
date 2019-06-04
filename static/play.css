@@ -111,3 +111,9 @@ form input {
     width: 45px;
     padding-right: 2px;
 }
+
+#resetButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}

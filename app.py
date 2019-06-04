@@ -160,18 +160,18 @@ def guessLetter():
     global currentWord
     global currentPlayers
     global pointScale
-    l = request.args.get('guessedLetter')
-    if(l.lower() not in alphabet):
+    l = request.args.get('guessedLetter').lower()
+    if(l not in alphabet):
         chatMessages.append(f"{currentPlaying['username']}... {l} er jo ikke i det engelske alfabetet? Du mister din tur")
         msg = 'Not an english letter'
-    elif(l.lower() in wrongLetters or l.lower() in rightLetters):
+    elif(l in wrongLetters or l in rightLetters):
         chatMessages.append(f"Wops {currentPlaying['username']}, '{l}' har allerede blitt gjettet. Du mister din tur")
         msg = 'Already guessed'
-    elif(l.lower() not in currentWord and l.lower()):
+    elif(l not in currentWord and l):
         chatMessages.append(random.choice([f"'{l}' er nok ikke en del av dette ordet {currentPlaying['username']}.", f"Godt forsøk {currentPlaying['username']}, men '{l}' er feil.", f"'{l}' var nesten, men nesten holder ikke {currentPlaying['username']}"]))
         wrongLetters.append(l)
         msg = 'That letter is not in the word'
-    elif(l.lower() in currentWord):
+    elif(l in currentWord):
         chatMessages.append(random.choice([f"Helt riktig {currentPlaying['username']}, '{l}' er en del av ordet!", f"{currentPlaying['username']} gjetter '{l}' og har aldri hatt mer rett", f"Du vinner denne gang {currentPlaying['username']}, '{l}' er riktig det..."]))
         rightLetterIndexes = [pos for pos, char in enumerate(currentWord) if char == l]
         rightLetters[l] = rightLetterIndexes
