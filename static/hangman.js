@@ -41,7 +41,7 @@ function registerNewUser() {
 
 function newWord() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:5000/newWord", true);
+    xhr.open("GET", "/newWord", true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -59,7 +59,7 @@ function newWord() {
 
 function getWord() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:5000/getWord", true);
+    xhr.open("GET", "/getWord", true);
     xhr.onload = function (e) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -79,7 +79,7 @@ function getWord() {
 function getPlayersLoop() {
     setTimeout(() => {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:5000/getPlayers", true);
+        xhr.open("GET", "/getPlayers", true);
         xhr.onload = function (e) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -128,7 +128,7 @@ function starting(started) {
 function letsPlay() {
     iStarted = true;
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:5000/letsPlay?username=${myUsername}`, true);
+    xhr.open("GET", `/letsPlay?username=${myUsername}`, true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -148,7 +148,7 @@ function letsPlay() {
 function getStatusLoop() {
     setTimeout(() => {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", `http://localhost:5000/status`, true);
+        xhr.open("GET", `/status`, true);
         xhr.onload = function (e) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -341,7 +341,7 @@ function guessWord() {
     var gw = document.getElementById("guessWord").value
     document.getElementById("guessWord").value = ''
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:5000/guessWord?guessedWord=${gw}&username=${myUsername}`, true);
+    xhr.open("GET", `/guessWord?guessedWord=${gw}&username=${myUsername}`, true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -364,7 +364,7 @@ function guessLetter() {
     var l = document.getElementById('guessLetterTextbox').value
     document.getElementById('guessLetter').style.display = 'none';
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:5000/guessLetter?guessedLetter=${l}`, true);
+    xhr.open("GET", `/guessLetter?guessedLetter=${l}`, true);
     xhr.onload = function (e) {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
