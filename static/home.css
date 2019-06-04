@@ -12,6 +12,11 @@
     bottom: 1px;
     width: 50%;
     margin: auto;
+    line-height: 60px;
+  }
+
+  #playHref {
+    text-decoration: none;
   }
   #playButton:hover{
     background:#fff;
