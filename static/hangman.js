@@ -194,7 +194,9 @@ function getStatusLoop() {
                     for(var l in rightLetters) {
                         if(rightLetters.hasOwnProperty(l)) {
                             for(i = 0; i < rightLetters[l].length; i++) {
-                                document.getElementById('letter_' + rightLetters[l][i]).innerHTML = '<h3>' + l.toUpperCase() + '</h3>'     
+                                var letterBox = document.getElementById('letter_' + rightLetters[l][i])
+                                letterBox.innerHTML = '<h3>' + l.toUpperCase() + '</h3>'
+                                letterBox.style.border = 'none'
                             }
                         }
                     }
