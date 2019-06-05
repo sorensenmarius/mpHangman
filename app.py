@@ -9,7 +9,8 @@ import json
 
 app = Flask(__name__)
 
-alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+# alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å']
 currentPlayers = []
 currentPlaying = ''
 playing = {'p': False, 'started': ''}
@@ -20,10 +21,29 @@ chatMessages = []
 winner = False
 newRound = True
 roundNr = 0
+norwegianWords = []
 
 
 #Constants
 pointScale = 500
+
+def setupNorwegianWords():
+    global norwegianWords
+    f = open('./static/nsf2016.txt')
+    for line in f:
+        if len(line) > 4 and len(line) < 14:
+            norwegianWords.append(line[:-1])
+
+def getNorwegianWord():
+    global norwegianWords
+    return random.choice(norwegianWords)
+
+
+def getEnglishWord():
+    randomLetter = random.choice(alphabet)
+    words = json.loads(requests.get(f'http://api.datamuse.com/sug?s={randomLetter}&max=1000').text)
+    word = random.choice([word for word in words if len(word.get('word')) > 4])
+    return word['word']
 
 @app.route('/')
 def home():
@@ -38,10 +58,8 @@ def play():
 def newWord():
     global currentWord
     global chatMessages
-    randomLetter = random.choice(alphabet)
-    words = json.loads(requests.get(f'http://api.datamuse.com/sug?s={randomLetter}&max=100').text)
-    word = random.choice([word for word in words if len(word.get('word')) > 4])
-    currentWord = word['word']
+    # currentWord = getEnglishWord() # Get English words, remember to switch to english alphabet when switching this
+    currentWord = getNorwegianWord() # Get norwegian words, switch alphabet. Only one of these should be uncommented
     length = len(currentWord)
     chatMessages.append("NYTT ORD!")
     newWordReset()
@@ -187,8 +205,6 @@ def guessLetter():
         else:
             s = 'sted'
         chatMessages.append(f"{currentPlaying['username']} får {len(rightLetterIndexes) * pointScale} poeng for å gjette en bokstav som er {len(rightLetterIndexes)} {s} i ordet!")
-        # TODO Adde poeng når spillere velger riktig bokstav:
-
         [player for player in currentPlayers if player.get('username') == currentPlaying['username']][0]['points'] += len(rightLetterIndexes) * pointScale
         msg = 'Correct letter!'
     i = currentPlayers.index(currentPlaying)
@@ -228,4 +244,5 @@ def gimme():
     return json.dumps({'w': currentWord})
 
 if __name__ == "__main__":
+    setupNorwegianWords()
     app.run(debug=1) 
