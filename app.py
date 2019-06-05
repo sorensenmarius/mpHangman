@@ -9,8 +9,8 @@ import json
 
 app = Flask(__name__)
 
-# alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å']
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+# alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å']
 currentPlayers = []
 currentPlaying = ''
 playing = {'p': False, 'started': ''}
@@ -58,8 +58,8 @@ def play():
 def newWord():
     global currentWord
     global chatMessages
-    # currentWord = getEnglishWord() # Get English words, remember to switch to english alphabet when switching this
-    currentWord = getNorwegianWord() # Get norwegian words, switch alphabet. Only one of these should be uncommented
+    currentWord = getEnglishWord() # Get English words, remember to switch to english alphabet when switching this
+    # currentWord = getNorwegianWord() # Get norwegian words, switch alphabet. Only one of these should be uncommented
     length = len(currentWord)
     chatMessages.append("NYTT ORD!")
     newWordReset()
