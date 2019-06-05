@@ -2,7 +2,7 @@ window.onload = () => {
     register()
 }
 
-
+//Kom igjen
 //Global variables
 var myUsername = ''
 var iStarted = false
