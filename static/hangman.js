@@ -20,7 +20,7 @@ function startGame() {
 
 function register() {
     var gameScreen = document.getElementById("game")
-    gameScreen.innerHTML = "<h1>Registrer deg med et brukernavn her: </h1><input type='text' placeholder='Brukernavn' id='registerTextField' onkeypress='if(event.keyCode == 13) registerNewUser()'><button label='Send' onclick='registerNewUser()' maxlength='12'>Send</button>"
+    gameScreen.innerHTML = "<h1>Registrer deg med et brukernavn her: </h1><input type='text' placeholder='Brukernavn' id='registerTextField' maxlength='12' onkeypress='if(event.keyCode == 13) registerNewUser()'><button label='Send' onclick='registerNewUser()'>Send</button>"
 }
 
 function registerNewUser() {
