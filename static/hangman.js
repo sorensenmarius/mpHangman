@@ -20,7 +20,7 @@ function startGame() {
 
 function register() {
     var gameScreen = document.getElementById("game")
-    gameScreen.innerHTML = "<h1>Registrer deg med et brukernavn her: </h1><input type='text' placeholder='Brukernavn' id='registerTextField' onkeypress='if(event.keyCode == 13) registerNewUser()'><button label='Send' onclick='registerNewUser()' >Send</button>"
+    gameScreen.innerHTML = "<h1>Registrer deg med et brukernavn her: </h1><input type='text' placeholder='Brukernavn' id='registerTextField' onkeypress='if(event.keyCode == 13) registerNewUser()'><button label='Send' onclick='registerNewUser()' maxlength='12'>Send</button>"
 }
 
 function registerNewUser() {
@@ -313,7 +313,7 @@ function init() {
     div.appendChild(div2)
     div = document.createElement('div')
     div.id = 'guess'
-    div.innerHTML = "<h3>Det er <span id='currentPlaying'></span> tur</h3><h4>Du kan gjette hele ordet her:</h4><input type='text' placeholder='Gjett ordet' id='guessWord' onkeypress='if(event.keyCode == 13) guessWord()'><button onclick='guessWord()' >Send</button>"
+    div.innerHTML = "<h3>Det er <span id='currentPlaying'></span> tur</h3><h4>Du kan gjette hele ordet her:</h4><input type='text' placeholder='Gjett ordet' maxlength='15' id='guessWord' onkeypress='if(event.keyCode == 13) guessWord()'><button onclick='guessWord()' >Send</button>"
     var guessLetter = document.createElement('div')
     guessLetter.id = 'guessLetter'
     guessLetter.innerHTML = "<h4 id='guessLetterHeader'>Gjett en bokstav:</h4><input type='text' id='guessLetterTextbox' placeholder='Gjett en bokstav' maxlength='1' minlength='1' onkeypress='if(event.keyCode == 13) guessLetter()'><button id='guessLetterButton' onclick='guessLetter()'>Send</button>"
