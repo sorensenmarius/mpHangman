@@ -303,7 +303,7 @@ function init() {
     div.id = 'word'
     g.appendChild(div)
     var h3 = document.createElement('h3')
-    h3.innerHTML = "<h3>Ordet er engelsk og har <span id='letterNum'></span> bokstaver"
+    h3.innerHTML = "<h3>Ordet er norsk og har <span id='letterNum'></span> bokstaver"
     div.appendChild(h3)
     var wrongLetters = document.createElement('div')
     wrongLetters.id = 'wrongLetters'
