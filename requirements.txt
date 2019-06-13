@@ -50,7 +50,6 @@ pyparsing==2.3.1
 pypiwin32==223
 pyrsistent==0.14.11
 python-dateutil==2.7.5
-pywin32==224
 PyYAML==3.13
 requests==2.20.1
 rsa==3.4.2
