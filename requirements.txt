@@ -47,7 +47,6 @@ pyasn1==0.4.5
 pycodestyle==2.5.0
 pylint==2.3.1
 pyparsing==2.3.1
-pypiwin32==223
 pyrsistent==0.14.11
 python-dateutil==2.7.5
 PyYAML==3.13
