@@ -169,7 +169,6 @@ def guessWord():
         winner = {'username': u, 'correctWord': w}
         chatMessages.append(f"{u} gjettet '{w}' som er helt riktig! {int(len(w) * (pointScale / 2))} poeng blir delt ut.")
         [player for player in currentPlayers if player.get('username') == u][0]['points'] += int(len(w) * (pointScale / 2))
-        print('hit?')
         return json.dumps({'correct': True})
     else:
         chatMessages.append(random.choice(wrongGuess))
