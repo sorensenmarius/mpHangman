@@ -1,4 +1,7 @@
 # Multiplayer hangman
-Go to https://mphangman.azurewebsites.net to try it out.  
+##Extremly slow online multiplayer hangman. 
+
+Should move from GET requests to sockets.
+
 Currently only in norwegian. 
 
